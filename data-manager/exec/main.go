@@ -5,16 +5,16 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
-	datamanager "my-go-apps/Inventory/data-manager"
-	"my-go-apps/Inventory/dto"
-	queueutils "my-go-apps/Inventory/queue-utils"
+	datamanager "my-go-apps/InventoryService/data-manager"
+	"my-go-apps/InventoryService/dto"
+	queueutils "my-go-apps/InventoryService/queue-utils"
 )
 
 const url = "amqp://guest:guest@localhost:5672"
 
 func main() {
 	fmt.Println("Started listening for messages to arrive on queues...")
-	sites := []string{"Brookhaven", "Ansley Mall", "GA Tech Campus"}
+	sites := []string{"Brookhaven" /*, "Ansley Mall", "GA Tech Campus"*/}
 
 	for _, site := range sites {
 		conn, ch := queueutils.GetChannel(url)
@@ -47,7 +47,7 @@ func main() {
 				fmt.Printf("Received message: %v\n", sd)
 
 				//determine if it's existing inventory or not
-				if _, ok := inventory[sd.Item]; ok {
+				if _, ok := inventory[sd.Item.Name]; ok {
 					err = datamanager.UpdateInventoryItem(sd)
 				} else {
 					err = datamanager.InsertInventoryItem(sd)

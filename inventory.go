@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"log"
-	queueutils "my-go-apps/Inventory/queue-utils"
-	"my-go-apps/inventory/dto"
+	"my-go-apps/InventoryService/dto"
+	queueutils "my-go-apps/InventoryService/queue-utils"
 
 	"github.com/streadway/amqp"
 )
@@ -21,9 +21,9 @@ type Shipping struct {
 
 func main() {
 	inventory1 := make(map[string]int)
-	inventory1["broccoli"] = 40
-	inventory1["apples"] = 75
-	inventory1["kiwi"] = 22
+	// inventory1["broccoli"] = 40
+	// inventory1["apples"] = 75
+	// inventory1["kiwi"] = 22
 	inventory1["kale"] = 18
 
 	inventory2 := make(map[string]int)
@@ -38,7 +38,20 @@ func main() {
 	inventory3["apple juice"] = 44
 	inventory3["poptarts"] = 55963
 
-	sites := []string{"Brookhaven", "Ansley Mall", "GA Tech Campus"}
+	sites := []string{"Brookhaven" /*, "Ansley Mall", "GA Tech Campus"*/}
+
+	nutritionSlice := make([]map[string]int, 0)
+	nutritionSlice = append(nutritionSlice, map[string]int{"A": 133})
+	nutritionSlice = append(nutritionSlice, map[string]int{"C": 134})
+	nutritionSlice = append(nutritionSlice, map[string]int{"Calcium": 10})
+	nutritionSlice = append(nutritionSlice, map[string]int{"Iron": 5})
+	nutritionSlice = append(nutritionSlice, map[string]int{"B6": 10})
+	nutritionSlice = append(nutritionSlice, map[string]int{"Magnesium": 7})
+
+	kale := dto.Item{
+		Name:           "kale",
+		NutritionFacts: nutritionSlice,
+	}
 
 	for _, site := range sites {
 		conn, ch := queueutils.GetChannel(url)
@@ -76,10 +89,19 @@ func main() {
 		enc := gob.NewEncoder(buf) // this enables the encoding
 
 		for key, value := range shippingRoute.inventory {
-			reading := dto.InventoryMessage{
-				Item:  key,
-				Count: value,
-				Site:  site,
+			reading := dto.InventoryMessage{}
+			if key == "kale" {
+				reading = dto.InventoryMessage{
+					Item:  kale,
+					Count: value,
+					Site:  site,
+				}
+			} else {
+				reading = dto.InventoryMessage{
+					Item:  dto.Item{},
+					Count: value,
+					Site:  site,
+				}
 			}
 
 			log.Printf("Delivering %d of %s", value, key)

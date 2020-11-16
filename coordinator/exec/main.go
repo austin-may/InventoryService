@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"my-go-apps/Inventory/coordinator"
+	"my-go-apps/InventoryService/coordinator"
 )
 
 var dc *coordinator.DatabaseConsumer //package level variable
