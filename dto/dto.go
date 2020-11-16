@@ -1,11 +1,18 @@
 package dto
 
-import "encoding/gob"
+import (
+	"encoding/gob"
+)
+
+type Item struct {
+	Name           string
+	NutritionFacts []map[string]int
+}
 
 type InventoryMessage struct {
-	Item  string
+	Item  Item
 	Count int
-	Site string
+	Site  string
 }
 
 func init() {

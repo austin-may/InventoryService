@@ -3,8 +3,8 @@ package coordinator
 import (
 	"bytes"
 	"encoding/gob"
-	"my-go-apps/Inventory/dto"
-	queueutils "my-go-apps/Inventory/queue-utils"
+	"my-go-apps/InventoryService/dto"
+	queueutils "my-go-apps/InventoryService/queue-utils"
 	"time"
 
 	"github.com/streadway/amqp"

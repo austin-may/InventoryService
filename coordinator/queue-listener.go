@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"my-go-apps/Inventory/dto"
-	queueutils "my-go-apps/Inventory/queue-utils"
+	"my-go-apps/InventoryService/dto"
+	queueutils "my-go-apps/InventoryService/queue-utils"
 
 	"github.com/streadway/amqp"
 )
