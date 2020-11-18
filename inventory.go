@@ -21,9 +21,9 @@ type Shipping struct {
 
 func main() {
 	inventory1 := make(map[string]int)
-	// inventory1["broccoli"] = 40
-	// inventory1["apples"] = 75
-	// inventory1["kiwi"] = 22
+	inventory1["broccoli"] = 99
+	inventory1["apple"] = 75
+	inventory1["kiwi"] = 105
 	inventory1["kale"] = 18
 
 	inventory2 := make(map[string]int)
@@ -40,18 +40,75 @@ func main() {
 
 	sites := []string{"Brookhaven" /*, "Ansley Mall", "GA Tech Campus"*/}
 
-	nutritionSlice := make([]map[string]int, 0)
-	nutritionSlice = append(nutritionSlice, map[string]int{"A": 133})
-	nutritionSlice = append(nutritionSlice, map[string]int{"C": 134})
-	nutritionSlice = append(nutritionSlice, map[string]int{"Calcium": 10})
-	nutritionSlice = append(nutritionSlice, map[string]int{"Iron": 5})
-	nutritionSlice = append(nutritionSlice, map[string]int{"B6": 10})
-	nutritionSlice = append(nutritionSlice, map[string]int{"Magnesium": 7})
+	broccoliNutritionSlice := make([]map[string]int, 0)
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Potassium": 13})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Sodium": 2})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"A": 18})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"C": 220})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Calcium": 7})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Iron": 6})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"B6": 15})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Magnesium": 7})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"D": 0})
+	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Cobalamin": 0})
+
+	broccoli := dto.Item{
+		Name:           "broccoli",
+		NutritionFacts: broccoliNutritionSlice,
+	}
+
+	appleNutritionSlice := make([]map[string]int, 0)
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Potassium": 5})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Sodium": 0})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"A": 1})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"C": 14})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Calcium": 1})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Iron": 1})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"B6": 5})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Magnesium": 2})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"D": 0})
+	appleNutritionSlice = append(appleNutritionSlice, map[string]int{"Cobalamin": 0})
+
+	apple := dto.Item{
+		Name:           "apple",
+		NutritionFacts: appleNutritionSlice,
+	}
+
+	kiwiNutritionSlice := make([]map[string]int, 0)
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Potassium": 6})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Sodium": 0})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"A": 1})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"C": 106})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Calcium": 2})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Iron": 1})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"B6": 0})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Magnesium": 3})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"D": 0})
+	kiwiNutritionSlice = append(kiwiNutritionSlice, map[string]int{"Cobalamin": 0})
+
+	kiwi := dto.Item{
+		Name:           "kiwi",
+		NutritionFacts: kiwiNutritionSlice,
+	}
+
+	kaleNutritionSlice := make([]map[string]int, 0)
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"A": 133})
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"C": 134})
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"Calcium": 10})
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"Iron": 5})
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"B6": 10})
+	kaleNutritionSlice = append(kaleNutritionSlice, map[string]int{"Magnesium": 7})
 
 	kale := dto.Item{
 		Name:           "kale",
-		NutritionFacts: nutritionSlice,
+		NutritionFacts: kaleNutritionSlice,
 	}
+
+	var inventoryItemsForSite = []dto.Item{}
+	inventoryItemsForSite = append(inventoryItemsForSite, broccoli)
+	inventoryItemsForSite = append(inventoryItemsForSite, apple)
+	inventoryItemsForSite = append(inventoryItemsForSite, kiwi)
+	inventoryItemsForSite = append(inventoryItemsForSite, kale)
 
 	for _, site := range sites {
 		conn, ch := queueutils.GetChannel(url)
@@ -88,27 +145,25 @@ func main() {
 		buf := new(bytes.Buffer)   //allows for reading/writing encoded data in memory
 		enc := gob.NewEncoder(buf) // this enables the encoding
 
+		reading := []dto.InventoryMessage{}
 		for key, value := range shippingRoute.inventory {
-			reading := dto.InventoryMessage{}
-			if key == "kale" {
-				reading = dto.InventoryMessage{
-					Item:  kale,
-					Count: value,
-					Site:  site,
-				}
-			} else {
-				reading = dto.InventoryMessage{
-					Item:  dto.Item{},
-					Count: value,
-					Site:  site,
+			for _, inventoryItem := range inventoryItemsForSite {
+				if key == inventoryItem.Name {
+					reading = append(reading, dto.InventoryMessage{
+						Item:  inventoryItem,
+						Site:  site,
+						Count: value,
+					})
 				}
 			}
+		}
+		for _, item := range reading {
 
-			log.Printf("Delivering %d of %s", value, key)
+			log.Printf("Delivering %d of %s", item.Count, item.Item.Name)
 
 			buf.Reset() // removes any previous data and resets the buffer back to its intiial position
 			enc = gob.NewEncoder(buf)
-			enc.Encode(reading) // this does the actual encoding
+			enc.Encode(item) // this does the actual encoding
 
 			msg := amqp.Publishing{
 				Body: buf.Bytes(),
@@ -120,9 +175,9 @@ func main() {
 				false,
 				false,
 				msg)
+
 		}
 	}
-
 }
 
 // func publishQueueName(ch *amqp.Channel) {
