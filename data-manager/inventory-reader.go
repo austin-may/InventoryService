@@ -3,6 +3,7 @@ package datamanager
 import (
 	"fmt"
 	"my-go-apps/InventoryService/dto"
+	"strings"
 )
 
 var inventory map[string]int
@@ -25,30 +26,32 @@ func InsertInventoryItem(reading *dto.InventoryMessage) error {
 
 	//loop through nutrition facts
 	for _, val := range reading.Item.NutritionFacts {
-		//this is super chatty, need to find a way to do this once
-		for vitaminType, percentDailyValue := range val {
-			q :=
-				fmt.Sprintf("SELECT VitaminID "+
-					"FROM VitaminDB..Vitamin "+
-					"WHERE VitaminType = '%s'", vitaminType)
+		var vitaminTypes []string
+		for vitaminType, _ := range val {
+			vitaminTypes = append(vitaminTypes, fmt.Sprintf("'%s'", vitaminType))
+		}
+		q :=
+			fmt.Sprintf("SELECT VitaminID, VitaminType "+
+				"FROM VitaminDB..Vitamin "+
+				"WHERE VitaminType in (%s)", strings.Join(vitaminTypes, ","))
 
-			rows, err := DbConn.Query(q)
-			if err != nil {
-				return err
-			}
-			defer rows.Close()
+		rows, err := DbConn.Query(q)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
 
-			for rows.Next() {
-				var vitaminId int
+		for rows.Next() {
+			var vitaminId int
+			var vitaminType string
 
-				rows.Scan(&vitaminId)
+			rows.Scan(&vitaminId, &vitaminType)
 
-				insertInventoryVitamin :=
-					fmt.Sprintf("INSERT INTO InventoryVitamin (ItemID, VitaminID, PercentDailyValue) "+
-						"VALUES (%d, %d, %d)", lastInsertId, vitaminId, percentDailyValue)
+			insertInventoryVitamin :=
+				fmt.Sprintf("INSERT INTO InventoryVitamin (ItemID, VitaminID, PercentDailyValue) "+
+					"VALUES (%d, %d, %d)", lastInsertId, vitaminId, val[vitaminType])
 
-				_, err = DbConn.Exec(insertInventoryVitamin)
-			}
+			_, err = DbConn.Exec(insertInventoryVitamin)
 		}
 	}
 
@@ -59,8 +62,8 @@ func UpdateInventoryItem(reading *dto.InventoryMessage) error {
 
 	q :=
 		fmt.Sprintf("UPDATE Inventory "+
-			"SET Count = %d"+
-			"WHERE Name = '%s' and Site = '%s'", reading.Count, reading.Item, reading.Site)
+			"SET Count = %d "+
+			"WHERE Name = '%s' and Site = '%s'", reading.Count, reading.Item.Name, reading.Site)
 
 	_, err := DbConn.Exec(q)
 
