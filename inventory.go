@@ -27,19 +27,14 @@ func main() {
 	inventory1["kale"] = 18
 
 	inventory2 := make(map[string]int)
-	inventory2["potatoes"] = 40
-	inventory2["toothpaste"] = 60
-	inventory2["doritos"] = 23
-	inventory2["carrots"] = 7
+	inventory2["potato"] = 40
+	inventory2["lemon"] = 60
+	inventory2["orange"] = 23
+	inventory2["carrot"] = 7
 
-	inventory3 := make(map[string]int)
-	inventory3["bagels"] = 90
-	inventory3["burgers"] = 50
-	inventory3["apple juice"] = 44
-	inventory3["poptarts"] = 55963
+	sites := []string{"Brookhaven", "Ansley Mall", "GA Tech Campus"}
 
-	sites := []string{"Brookhaven" /*, "Ansley Mall", "GA Tech Campus"*/}
-
+	//region Brookhaven Inventory
 	broccoliNutritionSlice := make([]map[string]int, 0)
 	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Potassium": 13})
 	broccoliNutritionSlice = append(broccoliNutritionSlice, map[string]int{"Sodium": 2})
@@ -110,6 +105,80 @@ func main() {
 	inventoryItemsForSite = append(inventoryItemsForSite, kiwi)
 	inventoryItemsForSite = append(inventoryItemsForSite, kale)
 
+	//endregion
+
+	//region Ansley Mall Inventory
+	potatoNutritionSlice := make([]map[string]int, 0)
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"Potassium": 25})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"Sodium": 1})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"A": 0})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"C": 32})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"Calcium": 2})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"Iron": 6})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"B6": 20})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"Magnesium": 11})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"D": 0})
+	potatoNutritionSlice = append(potatoNutritionSlice, map[string]int{"B12": 0})
+
+	potato := dto.Item{
+		Name:           "potato",
+		NutritionFacts: potatoNutritionSlice,
+	}
+
+	lemonNutritionSlice := make([]map[string]int, 0)
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"Potassium": 2})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"Sodium": 0})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"A": 0})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"C": 51})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"Calcium": 2})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"Iron": 2})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"B6": 0})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"Magnesium": 1})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"D": 0})
+	lemonNutritionSlice = append(lemonNutritionSlice, map[string]int{"B12": 0})
+
+	lemon := dto.Item{
+		Name:           "lemon",
+		NutritionFacts: lemonNutritionSlice,
+	}
+
+	orangeNutritionSlice := make([]map[string]int, 0)
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Potassium": 7})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Sodium": 0})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"A": 6})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"C": 116})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Calcium": 5})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Iron": 1})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"B6": 0})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Magnesium": 3})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"D": 0})
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"B12": 0})
+
+	orange := dto.Item{
+		Name:           "orange",
+		NutritionFacts: orangeNutritionSlice,
+	}
+
+	carrotNutritionSlice := make([]map[string]int, 0)
+	orangeNutritionSlice = append(orangeNutritionSlice, map[string]int{"Potassium": 7})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"A": 93})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"C": 7})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"K": 11})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"Iron": 2})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"B6": 8})
+	carrotNutritionSlice = append(carrotNutritionSlice, map[string]int{"Magnesium": 3})
+
+	carrot := dto.Item{
+		Name:           "carrot",
+		NutritionFacts: carrotNutritionSlice,
+	}
+
+	inventoryItemsForSite = append(inventoryItemsForSite, potato)
+	inventoryItemsForSite = append(inventoryItemsForSite, lemon)
+	inventoryItemsForSite = append(inventoryItemsForSite, orange)
+	inventoryItemsForSite = append(inventoryItemsForSite, carrot)
+	//endregion
+
 	for _, site := range sites {
 		conn, ch := queueutils.GetChannel(url)
 		defer conn.Close()
@@ -131,8 +200,6 @@ func main() {
 			inventoryToShip = inventory1
 		case "Ansley Mall":
 			inventoryToShip = inventory2
-		case "GA Tech Campus":
-			inventoryToShip = inventory3
 		}
 
 		shippingRoute := Shipping{

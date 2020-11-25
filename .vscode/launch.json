@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "C:\\Development\\go\\src\\my-go-apps\\InventoryService\\data-manager\\exec",
+            "program": "C:\\Development\\go\\src\\my-go-apps\\InventoryService\\graphql-server",
             "env": {},
             "args": []
         }

@@ -1,0 +1,27 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Inventory {
+	InventoryId: ID!    
+	Name:       String! 
+	Count:      Int! 
+	Site:       String! 
+  InventoryVitamin: [InventoryVitamin]
+}
+
+type InventoryVitamin {
+	InventoryVitaminId: ID!    
+	InventoryId:       Int! 
+	VitaminId:         Int! 
+	PercentDailyValue: Int! 
+}
+
+type Query {
+  inventory: [Inventory!]!
+}
+
+#TODO
+#type Mutation {
+
+#}
