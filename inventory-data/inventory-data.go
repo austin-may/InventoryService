@@ -59,3 +59,13 @@ func GetInventory() ([]*model.Inventory, error) {
 
 	return inventoryList, nil
 }
+
+func AddInventory(inventory model.NewInventory) error {
+	command := fmt.Sprintf("INSERT INTO Inventory (Name, Count, Site) VALUES ('%s', %d, '%s')", inventory.Name, inventory.Count, inventory.Site)
+	_, err := datamanager.DbConn.Exec(command)
+	fmt.Println(command)
+	if err != nil {
+		return err
+	}
+	return nil
+}

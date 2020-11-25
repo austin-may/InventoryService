@@ -10,9 +10,22 @@ type Inventory struct {
 	InventoryVitamin []*InventoryVitamin `json:"InventoryVitamin"`
 }
 
+type InventoryToUpdate struct {
+	InventoryID string `json:"InventoryId"`
+	Name        string `json:"Name"`
+	Count       int    `json:"Count"`
+	Site        string `json:"Site"`
+}
+
 type InventoryVitamin struct {
 	InventoryVitaminID string `json:"InventoryVitaminId"`
 	InventoryID        int    `json:"InventoryId"`
 	VitaminID          int    `json:"VitaminId"`
 	PercentDailyValue  int    `json:"PercentDailyValue"`
+}
+
+type NewInventory struct {
+	Name  string `json:"Name"`
+	Count int    `json:"Count"`
+	Site  string `json:"Site"`
 }
