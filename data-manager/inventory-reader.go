@@ -13,7 +13,7 @@ func InsertInventoryItem(reading *dto.InventoryMessage) error {
 	var lastInsertId int
 	insertInventory :=
 		fmt.Sprintf("INSERT INTO Inventory (Name, Count, Site) "+
-			"OUTPUT INSERTED.[ItemID] "+
+			"OUTPUT INSERTED.[InventoryID] "+
 			"VALUES ('%s', %d, '%s')", reading.Item.Name, reading.Count, reading.Site)
 
 	err := DbConn.QueryRow(insertInventory).Scan(&lastInsertId)
@@ -48,7 +48,7 @@ func InsertInventoryItem(reading *dto.InventoryMessage) error {
 			rows.Scan(&vitaminId, &vitaminType)
 
 			insertInventoryVitamin :=
-				fmt.Sprintf("INSERT INTO InventoryVitamin (ItemID, VitaminID, PercentDailyValue) "+
+				fmt.Sprintf("INSERT INTO InventoryVitamin (InventoryID, VitaminID, PercentDailyValue) "+
 					"VALUES (%d, %d, %d)", lastInsertId, vitaminId, val[vitaminType])
 
 			_, err = DbConn.Exec(insertInventoryVitamin)
