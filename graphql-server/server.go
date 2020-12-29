@@ -4,6 +4,7 @@ import (
 	"log"
 	"my-go-apps/InventoryService/graph"
 	"my-go-apps/InventoryService/graph/generated"
+	"my-go-apps/VitaminApp/cors"
 	"net/http"
 	"os"
 
@@ -22,7 +23,7 @@ func main() {
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", cors.MiddlewareHandler(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
