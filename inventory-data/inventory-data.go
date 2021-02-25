@@ -60,12 +60,15 @@ func GetInventory() ([]*model.Inventory, error) {
 	return inventoryList, nil
 }
 
-func AddInventory(inventory model.NewInventory) error {
-	command := fmt.Sprintf("INSERT INTO Inventory (Name, Count, Site) VALUES ('%s', %d, '%s')", inventory.Name, inventory.Count, inventory.Site)
-	_, err := datamanager.DbConn.Exec(command)
+func AddInventory(inventory model.NewInventory) (*model.NewInventoryResponse, error) {
+	command := fmt.Sprintf(`INSERT INTO Inventory (Name, Count, Site) VALUES ('%s', %d, '%s');
+	SELECT InventoryID, Name, Count, Site FROM Inventory WHERE InventoryID = SCOPE_IDENTITY()`, inventory.Name, inventory.Count, inventory.Site)
+	var addedItem model.NewInventoryResponse
+	err := datamanager.DbConn.QueryRow(command).Scan(&addedItem.ID, &addedItem.Name, &addedItem.Count, &addedItem.Site)
 	fmt.Println(command)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	fmt.Println(addedItem)
+	return &addedItem, nil
 }

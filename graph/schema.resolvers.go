@@ -11,12 +11,12 @@ import (
 	inventorydata "my-go-apps/InventoryService/inventory-data"
 )
 
-func (r *mutationResolver) CreateInventory(ctx context.Context, input model.NewInventory) (*model.Inventory, error) {
-	err := inventorydata.AddInventory(input)
+func (r *mutationResolver) CreateInventory(ctx context.Context, input model.NewInventory) (*model.NewInventoryResponse, error) {
+	response, err := inventorydata.AddInventory(input)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return response, nil
 }
 
 func (r *mutationResolver) UpdateInventory(ctx context.Context, input model.InventoryToUpdate) (*model.Inventory, error) {

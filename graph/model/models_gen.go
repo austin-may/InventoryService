@@ -29,3 +29,10 @@ type NewInventory struct {
 	Count int    `json:"Count"`
 	Site  string `json:"Site"`
 }
+
+type NewInventoryResponse struct {
+	ID    string `json:"Id"`
+	Name  string `json:"Name"`
+	Count int    `json:"Count"`
+	Site  string `json:"Site"`
+}

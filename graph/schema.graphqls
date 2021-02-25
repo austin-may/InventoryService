@@ -21,6 +21,13 @@ type Query {
   inventory: [Inventory!]!
 }
 
+type NewInventoryResponse {
+	Id:			ID!
+  	Name:       String! 
+    Count:      Int! 
+    Site:       String! 
+}
+
 input NewInventory {
   	Name:       String! 
     Count:      Int! 
@@ -28,14 +35,14 @@ input NewInventory {
 }
 
 input InventoryToUpdate {
-	  InventoryId: ID!    
+	InventoryId: ID!    
   	Name:       String! 
     Count:      Int! 
     Site:       String! 
 }
 
 type Mutation {
-  createInventory(input:NewInventory!): Inventory,
+  createInventory(input:NewInventory!): NewInventoryResponse,
   updateInventory(input:InventoryToUpdate!): Inventory,
   deleteInventory(inventoryId: Int): Inventory
 }

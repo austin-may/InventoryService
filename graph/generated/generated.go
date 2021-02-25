@@ -64,13 +64,20 @@ type ComplexityRoot struct {
 		UpdateInventory func(childComplexity int, input model.InventoryToUpdate) int
 	}
 
+	NewInventoryResponse struct {
+		Count func(childComplexity int) int
+		ID    func(childComplexity int) int
+		Name  func(childComplexity int) int
+		Site  func(childComplexity int) int
+	}
+
 	Query struct {
 		Inventory func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	CreateInventory(ctx context.Context, input model.NewInventory) (*model.Inventory, error)
+	CreateInventory(ctx context.Context, input model.NewInventory) (*model.NewInventoryResponse, error)
 	UpdateInventory(ctx context.Context, input model.InventoryToUpdate) (*model.Inventory, error)
 	DeleteInventory(ctx context.Context, inventoryID *int) (*model.Inventory, error)
 }
@@ -192,6 +199,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateInventory(childComplexity, args["input"].(model.InventoryToUpdate)), true
 
+	case "NewInventoryResponse.Count":
+		if e.complexity.NewInventoryResponse.Count == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.Count(childComplexity), true
+
+	case "NewInventoryResponse.Id":
+		if e.complexity.NewInventoryResponse.ID == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.ID(childComplexity), true
+
+	case "NewInventoryResponse.Name":
+		if e.complexity.NewInventoryResponse.Name == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.Name(childComplexity), true
+
+	case "NewInventoryResponse.Site":
+		if e.complexity.NewInventoryResponse.Site == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.Site(childComplexity), true
+
 	case "Query.inventory":
 		if e.complexity.Query.Inventory == nil {
 			break
@@ -286,6 +321,13 @@ type Query {
   inventory: [Inventory!]!
 }
 
+type NewInventoryResponse {
+	Id:			ID!
+  	Name:       String! 
+    Count:      Int! 
+    Site:       String! 
+}
+
 input NewInventory {
   	Name:       String! 
     Count:      Int! 
@@ -293,14 +335,14 @@ input NewInventory {
 }
 
 input InventoryToUpdate {
-	  InventoryId: ID!    
+	InventoryId: ID!    
   	Name:       String! 
     Count:      Int! 
     Site:       String! 
 }
 
 type Mutation {
-  createInventory(input:NewInventory!): Inventory,
+  createInventory(input:NewInventory!): NewInventoryResponse,
   updateInventory(input:InventoryToUpdate!): Inventory,
   deleteInventory(inventoryId: Int): Inventory
 }`, BuiltIn: false},
@@ -755,9 +797,9 @@ func (ec *executionContext) _Mutation_createInventory(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Inventory)
+	res := resTmp.(*model.NewInventoryResponse)
 	fc.Result = res
-	return ec.marshalOInventory2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventory(ctx, field.Selections, res)
+	return ec.marshalONewInventoryResponse2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNewInventoryResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateInventory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -836,6 +878,146 @@ func (ec *executionContext) _Mutation_deleteInventory(ctx context.Context, field
 	res := resTmp.(*model.Inventory)
 	fc.Result = res
 	return ec.marshalOInventory2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventory(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_Id(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_Name(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_Count(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_Site(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Site, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_inventory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2237,6 +2419,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
+var newInventoryResponseImplementors = []string{"NewInventoryResponse"}
+
+func (ec *executionContext) _NewInventoryResponse(ctx context.Context, sel ast.SelectionSet, obj *model.NewInventoryResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, newInventoryResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NewInventoryResponse")
+		case "Id":
+			out.Values[i] = ec._NewInventoryResponse_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._NewInventoryResponse_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Count":
+			out.Values[i] = ec._NewInventoryResponse_Count(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Site":
+			out.Values[i] = ec._NewInventoryResponse_Site(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -2963,6 +3187,13 @@ func (ec *executionContext) marshalOInventoryVitamin2ᚖmyᚑgoᚑappsᚋInvento
 		return graphql.Null
 	}
 	return ec._InventoryVitamin(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalONewInventoryResponse2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNewInventoryResponse(ctx context.Context, sel ast.SelectionSet, v *model.NewInventoryResponse) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._NewInventoryResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
