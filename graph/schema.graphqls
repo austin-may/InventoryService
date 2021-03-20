@@ -4,10 +4,13 @@
 
 type Inventory {
 	InventoryId: ID!    
-	Name:       String! 
-	Count:      Int! 
-	Site:       String! 
-  InventoryVitamin: [InventoryVitamin]
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
+  	InventoryVitamin: [InventoryVitamin]
 }
 
 type InventoryVitamin {
@@ -21,21 +24,38 @@ type Query {
   inventory: [Inventory!]!
 }
 
+type NewInventoryResponse {
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
+}
+
 input NewInventory {
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+  	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 input InventoryToUpdate {
-	  InventoryId: ID!    
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 type Mutation {
-  createInventory(input:NewInventory!): Inventory,
+  createInventory(input:NewInventory!): NewInventoryResponse,
   updateInventory(input:InventoryToUpdate!): Inventory,
   deleteInventory(inventoryId: Int): Inventory
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func GetInventory() ([]*model.Inventory, error) {
-	inventoryQuery := fmt.Sprintf("SELECT InventoryID, Name, Count, Site " +
+	inventoryQuery := fmt.Sprintf("SELECT InventoryID, Name, Count, Price, ExpirationDate, Site, SkuNumber " +
 		"FROM Inventory")
 
 	inventoryVitaminQuery := fmt.Sprintf("SELECT InventoryVitaminID, InventoryID, VitaminID, PercentDailyValue " +
@@ -35,7 +35,7 @@ func GetInventory() ([]*model.Inventory, error) {
 	inventoryList := make([]*model.Inventory, 0)
 	for inventoryResults.Next() {
 		var inventory model.Inventory
-		inventoryResults.Scan(&inventory.InventoryID, &inventory.Name, &inventory.Count, &inventory.Site)
+		inventoryResults.Scan(&inventory.InventoryID, &inventory.Name, &inventory.Count, &inventory.Price, &inventory.ExpirationDate, &inventory.Site, &inventory.SkuNumber)
 
 		inventoryList = append(inventoryList, &inventory)
 	}
@@ -60,12 +60,15 @@ func GetInventory() ([]*model.Inventory, error) {
 	return inventoryList, nil
 }
 
-func AddInventory(inventory model.NewInventory) error {
-	command := fmt.Sprintf("INSERT INTO Inventory (Name, Count, Site) VALUES ('%s', %d, '%s')", inventory.Name, inventory.Count, inventory.Site)
-	_, err := datamanager.DbConn.Exec(command)
+func AddInventory(inventory model.NewInventory) (*model.NewInventoryResponse, error) {
+	command := fmt.Sprintf(`INSERT INTO Inventory (Name, Count, Price, ExpirationDate, Site, SkuNumber) VALUES ('%s', %d, %f, '%s', '%s', '%s');
+	SELECT InventoryID, Name, Count, Price, ExpirationDate, Site, SkuNumber FROM Inventory WHERE InventoryID = SCOPE_IDENTITY()`, inventory.Name, inventory.Count, inventory.Price, inventory.ExpirationDate, inventory.Site, inventory.SkuNumber)
+	var addedItem model.NewInventoryResponse
+	err := datamanager.DbConn.QueryRow(command).Scan(&addedItem.ID, &addedItem.Name, &addedItem.Count, &addedItem.Price, &addedItem.ExpirationDate, &addedItem.Site, &addedItem.SkuNumber)
 	fmt.Println(command)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	fmt.Println(addedItem)
+	return &addedItem, nil
 }

@@ -6,15 +6,21 @@ type Inventory struct {
 	InventoryID      string              `json:"InventoryId"`
 	Name             string              `json:"Name"`
 	Count            int                 `json:"Count"`
+	Price            float64             `json:"Price"`
+	ExpirationDate   string              `json:"ExpirationDate"`
 	Site             string              `json:"Site"`
+	SkuNumber        string              `json:"SkuNumber"`
 	InventoryVitamin []*InventoryVitamin `json:"InventoryVitamin"`
 }
 
 type InventoryToUpdate struct {
-	InventoryID string `json:"InventoryId"`
-	Name        string `json:"Name"`
-	Count       int    `json:"Count"`
-	Site        string `json:"Site"`
+	ID             string  `json:"Id"`
+	Name           string  `json:"Name"`
+	Count          int     `json:"Count"`
+	Price          float64 `json:"Price"`
+	ExpirationDate string  `json:"ExpirationDate"`
+	Site           string  `json:"Site"`
+	SkuNumber      string  `json:"SkuNumber"`
 }
 
 type InventoryVitamin struct {
@@ -25,7 +31,21 @@ type InventoryVitamin struct {
 }
 
 type NewInventory struct {
-	Name  string `json:"Name"`
-	Count int    `json:"Count"`
-	Site  string `json:"Site"`
+	ID             string  `json:"Id"`
+	Name           string  `json:"Name"`
+	Count          int     `json:"Count"`
+	Price          float64 `json:"Price"`
+	ExpirationDate string  `json:"ExpirationDate"`
+	Site           string  `json:"Site"`
+	SkuNumber      string  `json:"SkuNumber"`
+}
+
+type NewInventoryResponse struct {
+	ID             string  `json:"Id"`
+	Name           string  `json:"Name"`
+	Count          int     `json:"Count"`
+	Price          float64 `json:"Price"`
+	ExpirationDate string  `json:"ExpirationDate"`
+	Site           string  `json:"Site"`
+	SkuNumber      string  `json:"SkuNumber"`
 }
