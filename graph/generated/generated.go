@@ -45,10 +45,13 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Inventory struct {
 		Count            func(childComplexity int) int
+		ExpirationDate   func(childComplexity int) int
 		InventoryID      func(childComplexity int) int
 		InventoryVitamin func(childComplexity int) int
 		Name             func(childComplexity int) int
+		Price            func(childComplexity int) int
 		Site             func(childComplexity int) int
+		SkuNumber        func(childComplexity int) int
 	}
 
 	InventoryVitamin struct {
@@ -65,10 +68,13 @@ type ComplexityRoot struct {
 	}
 
 	NewInventoryResponse struct {
-		Count func(childComplexity int) int
-		ID    func(childComplexity int) int
-		Name  func(childComplexity int) int
-		Site  func(childComplexity int) int
+		Count          func(childComplexity int) int
+		ExpirationDate func(childComplexity int) int
+		ID             func(childComplexity int) int
+		Name           func(childComplexity int) int
+		Price          func(childComplexity int) int
+		Site           func(childComplexity int) int
+		SkuNumber      func(childComplexity int) int
 	}
 
 	Query struct {
@@ -107,6 +113,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Inventory.Count(childComplexity), true
 
+	case "Inventory.ExpirationDate":
+		if e.complexity.Inventory.ExpirationDate == nil {
+			break
+		}
+
+		return e.complexity.Inventory.ExpirationDate(childComplexity), true
+
 	case "Inventory.InventoryId":
 		if e.complexity.Inventory.InventoryID == nil {
 			break
@@ -128,12 +141,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Inventory.Name(childComplexity), true
 
+	case "Inventory.Price":
+		if e.complexity.Inventory.Price == nil {
+			break
+		}
+
+		return e.complexity.Inventory.Price(childComplexity), true
+
 	case "Inventory.Site":
 		if e.complexity.Inventory.Site == nil {
 			break
 		}
 
 		return e.complexity.Inventory.Site(childComplexity), true
+
+	case "Inventory.SkuNumber":
+		if e.complexity.Inventory.SkuNumber == nil {
+			break
+		}
+
+		return e.complexity.Inventory.SkuNumber(childComplexity), true
 
 	case "InventoryVitamin.InventoryId":
 		if e.complexity.InventoryVitamin.InventoryID == nil {
@@ -206,6 +233,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NewInventoryResponse.Count(childComplexity), true
 
+	case "NewInventoryResponse.ExpirationDate":
+		if e.complexity.NewInventoryResponse.ExpirationDate == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.ExpirationDate(childComplexity), true
+
 	case "NewInventoryResponse.Id":
 		if e.complexity.NewInventoryResponse.ID == nil {
 			break
@@ -220,12 +254,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NewInventoryResponse.Name(childComplexity), true
 
+	case "NewInventoryResponse.Price":
+		if e.complexity.NewInventoryResponse.Price == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.Price(childComplexity), true
+
 	case "NewInventoryResponse.Site":
 		if e.complexity.NewInventoryResponse.Site == nil {
 			break
 		}
 
 		return e.complexity.NewInventoryResponse.Site(childComplexity), true
+
+	case "NewInventoryResponse.SkuNumber":
+		if e.complexity.NewInventoryResponse.SkuNumber == nil {
+			break
+		}
+
+		return e.complexity.NewInventoryResponse.SkuNumber(childComplexity), true
 
 	case "Query.inventory":
 		if e.complexity.Query.Inventory == nil {
@@ -304,10 +352,13 @@ var sources = []*ast.Source{
 
 type Inventory {
 	InventoryId: ID!    
-	Name:       String! 
-	Count:      Int! 
-	Site:       String! 
-  InventoryVitamin: [InventoryVitamin]
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
+  	InventoryVitamin: [InventoryVitamin]
 }
 
 type InventoryVitamin {
@@ -322,23 +373,33 @@ type Query {
 }
 
 type NewInventoryResponse {
-	Id:			ID!
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 input NewInventory {
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+  	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 input InventoryToUpdate {
-	InventoryId: ID!    
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 type Mutation {
@@ -556,6 +617,76 @@ func (ec *executionContext) _Inventory_Count(ctx context.Context, field graphql.
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Inventory_Price(ctx context.Context, field graphql.CollectedField, obj *model.Inventory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Inventory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Inventory_ExpirationDate(ctx context.Context, field graphql.CollectedField, obj *model.Inventory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Inventory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExpirationDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Inventory_Site(ctx context.Context, field graphql.CollectedField, obj *model.Inventory) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -575,6 +706,41 @@ func (ec *executionContext) _Inventory_Site(ctx context.Context, field graphql.C
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Site, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Inventory_SkuNumber(ctx context.Context, field graphql.CollectedField, obj *model.Inventory) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Inventory",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SkuNumber, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -985,6 +1151,76 @@ func (ec *executionContext) _NewInventoryResponse_Count(ctx context.Context, fie
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _NewInventoryResponse_Price(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_ExpirationDate(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExpirationDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _NewInventoryResponse_Site(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1004,6 +1240,41 @@ func (ec *executionContext) _NewInventoryResponse_Site(ctx context.Context, fiel
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Site, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NewInventoryResponse_SkuNumber(ctx context.Context, field graphql.CollectedField, obj *model.NewInventoryResponse) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NewInventoryResponse",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SkuNumber, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2219,11 +2490,11 @@ func (ec *executionContext) unmarshalInputInventoryToUpdate(ctx context.Context,
 
 	for k, v := range asMap {
 		switch k {
-		case "InventoryId":
+		case "Id":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("InventoryId"))
-			it.InventoryID, err = ec.unmarshalNID2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2243,11 +2514,35 @@ func (ec *executionContext) unmarshalInputInventoryToUpdate(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
+		case "Price":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Price"))
+			it.Price, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ExpirationDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExpirationDate"))
+			it.ExpirationDate, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "Site":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Site"))
 			it.Site, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "SkuNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SkuNumber"))
+			it.SkuNumber, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2263,6 +2558,14 @@ func (ec *executionContext) unmarshalInputNewInventory(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
+		case "Id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "Name":
 			var err error
 
@@ -2279,11 +2582,35 @@ func (ec *executionContext) unmarshalInputNewInventory(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "Price":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Price"))
+			it.Price, err = ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ExpirationDate":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExpirationDate"))
+			it.ExpirationDate, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "Site":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Site"))
 			it.Site, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "SkuNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("SkuNumber"))
+			it.SkuNumber, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2327,8 +2654,23 @@ func (ec *executionContext) _Inventory(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "Price":
+			out.Values[i] = ec._Inventory_Price(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "ExpirationDate":
+			out.Values[i] = ec._Inventory_ExpirationDate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Site":
 			out.Values[i] = ec._Inventory_Site(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "SkuNumber":
+			out.Values[i] = ec._Inventory_SkuNumber(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2445,8 +2787,23 @@ func (ec *executionContext) _NewInventoryResponse(ctx context.Context, sel ast.S
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "Price":
+			out.Values[i] = ec._NewInventoryResponse_Price(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "ExpirationDate":
+			out.Values[i] = ec._NewInventoryResponse_ExpirationDate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Site":
 			out.Values[i] = ec._NewInventoryResponse_Site(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "SkuNumber":
+			out.Values[i] = ec._NewInventoryResponse_SkuNumber(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2757,6 +3114,21 @@ func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interf
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
 	res := graphql.MarshalBoolean(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	res, err := graphql.UnmarshalFloat(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	res := graphql.MarshalFloat(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

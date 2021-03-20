@@ -4,10 +4,13 @@
 
 type Inventory {
 	InventoryId: ID!    
-	Name:       String! 
-	Count:      Int! 
-	Site:       String! 
-  InventoryVitamin: [InventoryVitamin]
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
+  	InventoryVitamin: [InventoryVitamin]
 }
 
 type InventoryVitamin {
@@ -22,23 +25,33 @@ type Query {
 }
 
 type NewInventoryResponse {
-	Id:			ID!
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 input NewInventory {
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+  	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 input InventoryToUpdate {
-	InventoryId: ID!    
-  	Name:       String! 
-    Count:      Int! 
-    Site:       String! 
+	Id:				ID!
+  	Name:       	String! 
+    Count:      	Int! 
+	Price:			Float!
+	ExpirationDate: String!
+    Site:       	String! 
+	SkuNumber:		String!
 }
 
 type Mutation {
