@@ -35,6 +35,14 @@ func (r *queryResolver) Inventory(ctx context.Context) ([]*model.Inventory, erro
 	return inventory, nil
 }
 
+func (r *queryResolver) VitaminNutritionFacts(ctx context.Context, inventoryConsumed []*model.InventoryConsumed) ([]*model.NutritionFacts, error) {
+	nutritionFacts, err := inventorydata.GetNutritionFactsFromConsumedInventory(inventoryConsumed);
+	if err != nil {
+		return nil, err
+	}
+	return nutritionFacts, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

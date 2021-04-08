@@ -20,10 +20,6 @@ type InventoryVitamin {
 	PercentDailyValue: Int! 
 }
 
-type Query {
-  inventory: [Inventory!]!
-}
-
 type NewInventoryResponse {
 	Id:				ID!
   	Name:       	String! 
@@ -52,6 +48,27 @@ input InventoryToUpdate {
 	ExpirationDate: String!
     Site:       	String! 
 	SkuNumber:		String!
+}
+
+input InventoryConsumed {
+  	Name:       	String! 
+    Amount:      	Int! 
+	Measurement:	String!
+}
+
+type NutritionFacts {
+  	InventoryName:  String!
+	NutritionFact: NutritionFact!
+}
+
+type NutritionFact {
+    Vitamin:      	String! 
+	Percent:		Int!
+}
+
+type Query {
+  inventory: [Inventory!]!,
+  vitaminNutritionFacts(inventoryConsumed: [InventoryConsumed!]) : [NutritionFacts]!
 }
 
 type Mutation {
