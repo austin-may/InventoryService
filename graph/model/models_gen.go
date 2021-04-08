@@ -13,6 +13,12 @@ type Inventory struct {
 	InventoryVitamin []*InventoryVitamin `json:"InventoryVitamin"`
 }
 
+type InventoryConsumed struct {
+	Name        string `json:"Name"`
+	Amount      int    `json:"Amount"`
+	Measurement string `json:"Measurement"`
+}
+
 type InventoryToUpdate struct {
 	ID             string  `json:"Id"`
 	Name           string  `json:"Name"`
@@ -48,4 +54,14 @@ type NewInventoryResponse struct {
 	ExpirationDate string  `json:"ExpirationDate"`
 	Site           string  `json:"Site"`
 	SkuNumber      string  `json:"SkuNumber"`
+}
+
+type NutritionFact struct {
+	Vitamin string `json:"Vitamin"`
+	Percent int    `json:"Percent"`
+}
+
+type NutritionFacts struct {
+	InventoryName string         `json:"InventoryName"`
+	NutritionFact *NutritionFact `json:"NutritionFact"`
 }

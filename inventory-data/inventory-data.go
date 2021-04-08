@@ -7,6 +7,7 @@ import (
 	"my-go-apps/InventoryService/graph/model"
 	"strconv"
 	"time"
+	"strings"
 )
 
 func GetInventory() ([]*model.Inventory, error) {
@@ -58,6 +59,47 @@ func GetInventory() ([]*model.Inventory, error) {
 	}
 
 	return inventoryList, nil
+}
+
+func GetNutritionFactsFromConsumedInventory(inventoryConsumed []*model.InventoryConsumed) ([]*model.NutritionFacts, error) {
+	var nutritionNames []string
+	for _, inventory := range inventoryConsumed {
+		nutritionNames = append(nutritionNames, "'"+inventory.Name+"'")
+	}
+	nutritionString := strings.Join(nutritionNames, ",")
+	nutritionQuery := fmt.Sprintf(`select i.Name, v.VitaminType, iv.PercentDailyValue
+	from VitaminDB..Inventory i
+	join VitaminDB..InventoryVitamin iv
+	on i.InventoryID = iv.InventoryID
+	join VitaminDB..Vitamin v
+	on v.VitaminID = iv.VitaminID
+	where i.Name in (%s)`, nutritionString)
+
+	fmt.Printf(nutritionQuery)
+
+	context, cancel := context.WithTimeout(context.Background(), 8000*time.Millisecond)
+	defer cancel()
+
+	nutritionResults, err := datamanager.DbConn.QueryContext(context, nutritionQuery)
+
+	if (err != nil) {
+		return nil, err
+	}
+
+	defer nutritionResults.Close()
+
+	nutritionFactsList := make([]*model.NutritionFacts, 0)
+	for nutritionResults.Next() {
+		var nutritionFacts model.NutritionFacts
+		var nutritionFact model.NutritionFact
+
+		nutritionResults.Scan(&nutritionFacts.InventoryName, &nutritionFact.Vitamin, &nutritionFact.Percent)
+		nutritionFacts.NutritionFact = &nutritionFact
+		fmt.Printf("%s", nutritionFact.Vitamin)
+
+		nutritionFactsList = append(nutritionFactsList, &nutritionFacts)
+	}
+	return nutritionFactsList, nil
 }
 
 func AddInventory(inventory model.NewInventory) (*model.NewInventoryResponse, error) {

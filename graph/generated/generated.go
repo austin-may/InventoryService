@@ -77,8 +77,19 @@ type ComplexityRoot struct {
 		SkuNumber      func(childComplexity int) int
 	}
 
+	NutritionFact struct {
+		Percent func(childComplexity int) int
+		Vitamin func(childComplexity int) int
+	}
+
+	NutritionFacts struct {
+		InventoryName func(childComplexity int) int
+		NutritionFact func(childComplexity int) int
+	}
+
 	Query struct {
-		Inventory func(childComplexity int) int
+		Inventory             func(childComplexity int) int
+		VitaminNutritionFacts func(childComplexity int, inventoryConsumed []*model.InventoryConsumed) int
 	}
 }
 
@@ -89,6 +100,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Inventory(ctx context.Context) ([]*model.Inventory, error)
+	VitaminNutritionFacts(ctx context.Context, inventoryConsumed []*model.InventoryConsumed) ([]*model.NutritionFacts, error)
 }
 
 type executableSchema struct {
@@ -275,12 +287,52 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NewInventoryResponse.SkuNumber(childComplexity), true
 
+	case "NutritionFact.Percent":
+		if e.complexity.NutritionFact.Percent == nil {
+			break
+		}
+
+		return e.complexity.NutritionFact.Percent(childComplexity), true
+
+	case "NutritionFact.Vitamin":
+		if e.complexity.NutritionFact.Vitamin == nil {
+			break
+		}
+
+		return e.complexity.NutritionFact.Vitamin(childComplexity), true
+
+	case "NutritionFacts.InventoryName":
+		if e.complexity.NutritionFacts.InventoryName == nil {
+			break
+		}
+
+		return e.complexity.NutritionFacts.InventoryName(childComplexity), true
+
+	case "NutritionFacts.NutritionFact":
+		if e.complexity.NutritionFacts.NutritionFact == nil {
+			break
+		}
+
+		return e.complexity.NutritionFacts.NutritionFact(childComplexity), true
+
 	case "Query.inventory":
 		if e.complexity.Query.Inventory == nil {
 			break
 		}
 
 		return e.complexity.Query.Inventory(childComplexity), true
+
+	case "Query.vitaminNutritionFacts":
+		if e.complexity.Query.VitaminNutritionFacts == nil {
+			break
+		}
+
+		args, err := ec.field_Query_vitaminNutritionFacts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.VitaminNutritionFacts(childComplexity, args["inventoryConsumed"].([]*model.InventoryConsumed)), true
 
 	}
 	return 0, false
@@ -368,10 +420,6 @@ type InventoryVitamin {
 	PercentDailyValue: Int! 
 }
 
-type Query {
-  inventory: [Inventory!]!
-}
-
 type NewInventoryResponse {
 	Id:				ID!
   	Name:       	String! 
@@ -400,6 +448,27 @@ input InventoryToUpdate {
 	ExpirationDate: String!
     Site:       	String! 
 	SkuNumber:		String!
+}
+
+input InventoryConsumed {
+  	Name:       	String! 
+    Amount:      	Int! 
+	Measurement:	String!
+}
+
+type NutritionFacts {
+  	InventoryName:  String!
+	NutritionFact: NutritionFact!
+}
+
+type NutritionFact {
+    Vitamin:      	String! 
+	Percent:		Int!
+}
+
+type Query {
+  inventory: [Inventory!]!,
+  vitaminNutritionFacts(inventoryConsumed: [InventoryConsumed!]) : [NutritionFacts]!
 }
 
 type Mutation {
@@ -471,6 +540,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_vitaminNutritionFacts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []*model.InventoryConsumed
+	if tmp, ok := rawArgs["inventoryConsumed"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("inventoryConsumed"))
+		arg0, err = ec.unmarshalOInventoryConsumed2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryConsumedᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["inventoryConsumed"] = arg0
 	return args, nil
 }
 
@@ -1291,6 +1375,146 @@ func (ec *executionContext) _NewInventoryResponse_SkuNumber(ctx context.Context,
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _NutritionFact_Vitamin(ctx context.Context, field graphql.CollectedField, obj *model.NutritionFact) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NutritionFact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vitamin, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NutritionFact_Percent(ctx context.Context, field graphql.CollectedField, obj *model.NutritionFact) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NutritionFact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Percent, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NutritionFacts_InventoryName(ctx context.Context, field graphql.CollectedField, obj *model.NutritionFacts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NutritionFacts",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InventoryName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _NutritionFacts_NutritionFact(ctx context.Context, field graphql.CollectedField, obj *model.NutritionFacts) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "NutritionFacts",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NutritionFact, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.NutritionFact)
+	fc.Result = res
+	return ec.marshalNNutritionFact2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFact(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_inventory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1324,6 +1548,48 @@ func (ec *executionContext) _Query_inventory(ctx context.Context, field graphql.
 	res := resTmp.([]*model.Inventory)
 	fc.Result = res
 	return ec.marshalNInventory2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_vitaminNutritionFacts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_vitaminNutritionFacts_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().VitaminNutritionFacts(rctx, args["inventoryConsumed"].([]*model.InventoryConsumed))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.NutritionFacts)
+	fc.Result = res
+	return ec.marshalNNutritionFacts2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFacts(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2484,6 +2750,42 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputInventoryConsumed(ctx context.Context, obj interface{}) (model.InventoryConsumed, error) {
+	var it model.InventoryConsumed
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "Name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Amount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Amount"))
+			it.Amount, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Measurement":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Measurement"))
+			it.Measurement, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputInventoryToUpdate(ctx context.Context, obj interface{}) (model.InventoryToUpdate, error) {
 	var it model.InventoryToUpdate
 	var asMap = obj.(map[string]interface{})
@@ -2818,6 +3120,70 @@ func (ec *executionContext) _NewInventoryResponse(ctx context.Context, sel ast.S
 	return out
 }
 
+var nutritionFactImplementors = []string{"NutritionFact"}
+
+func (ec *executionContext) _NutritionFact(ctx context.Context, sel ast.SelectionSet, obj *model.NutritionFact) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, nutritionFactImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NutritionFact")
+		case "Vitamin":
+			out.Values[i] = ec._NutritionFact_Vitamin(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "Percent":
+			out.Values[i] = ec._NutritionFact_Percent(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var nutritionFactsImplementors = []string{"NutritionFacts"}
+
+func (ec *executionContext) _NutritionFacts(ctx context.Context, sel ast.SelectionSet, obj *model.NutritionFacts) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, nutritionFactsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NutritionFacts")
+		case "InventoryName":
+			out.Values[i] = ec._NutritionFacts_InventoryName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "NutritionFact":
+			out.Values[i] = ec._NutritionFacts_NutritionFact(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -2842,6 +3208,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_inventory(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "vitaminNutritionFacts":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_vitaminNutritionFacts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -3214,6 +3594,11 @@ func (ec *executionContext) marshalNInventory2ᚖmyᚑgoᚑappsᚋInventoryServi
 	return ec._Inventory(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNInventoryConsumed2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryConsumed(ctx context.Context, v interface{}) (*model.InventoryConsumed, error) {
+	res, err := ec.unmarshalInputInventoryConsumed(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNInventoryToUpdate2myᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryToUpdate(ctx context.Context, v interface{}) (model.InventoryToUpdate, error) {
 	res, err := ec.unmarshalInputInventoryToUpdate(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3222,6 +3607,53 @@ func (ec *executionContext) unmarshalNInventoryToUpdate2myᚑgoᚑappsᚋInvento
 func (ec *executionContext) unmarshalNNewInventory2myᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNewInventory(ctx context.Context, v interface{}) (model.NewInventory, error) {
 	res, err := ec.unmarshalInputNewInventory(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNutritionFact2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFact(ctx context.Context, sel ast.SelectionSet, v *model.NutritionFact) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._NutritionFact(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNNutritionFacts2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFacts(ctx context.Context, sel ast.SelectionSet, v []*model.NutritionFacts) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalONutritionFacts2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFacts(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -3514,6 +3946,30 @@ func (ec *executionContext) marshalOInventory2ᚖmyᚑgoᚑappsᚋInventoryServi
 	return ec._Inventory(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOInventoryConsumed2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryConsumedᚄ(ctx context.Context, v interface{}) ([]*model.InventoryConsumed, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*model.InventoryConsumed, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNInventoryConsumed2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryConsumed(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) marshalOInventoryVitamin2ᚕᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐInventoryVitamin(ctx context.Context, sel ast.SelectionSet, v []*model.InventoryVitamin) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -3566,6 +4022,13 @@ func (ec *executionContext) marshalONewInventoryResponse2ᚖmyᚑgoᚑappsᚋInv
 		return graphql.Null
 	}
 	return ec._NewInventoryResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalONutritionFacts2ᚖmyᚑgoᚑappsᚋInventoryServiceᚋgraphᚋmodelᚐNutritionFacts(ctx context.Context, sel ast.SelectionSet, v *model.NutritionFacts) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._NutritionFacts(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
