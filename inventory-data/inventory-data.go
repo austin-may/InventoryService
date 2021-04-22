@@ -63,8 +63,10 @@ func GetInventory() ([]*model.Inventory, error) {
 
 func GetNutritionFactsFromConsumedInventory(inventoryConsumed []*model.InventoryConsumed) ([]*model.NutritionFacts, error) {
 	var nutritionNames []string
+	nutritionNameAmountMap := make(map[string]int)
 	for _, inventory := range inventoryConsumed {
 		nutritionNames = append(nutritionNames, "'"+inventory.Name+"'")
+		nutritionNameAmountMap[strings.ToLower(inventory.Name)] = inventory.Amount
 	}
 	nutritionString := strings.Join(nutritionNames, ",")
 	nutritionQuery := fmt.Sprintf(`select i.Name, v.VitaminType, iv.PercentDailyValue
@@ -93,12 +95,53 @@ func GetNutritionFactsFromConsumedInventory(inventoryConsumed []*model.Inventory
 		var nutritionFacts model.NutritionFacts
 		var nutritionFact model.NutritionFact
 
+
 		nutritionResults.Scan(&nutritionFacts.InventoryName, &nutritionFact.Vitamin, &nutritionFact.Percent)
+		percentMultipliedByAmountConsumed := nutritionNameAmountMap[nutritionFacts.InventoryName] * nutritionFact.Percent //Amount * Percent
+		nutritionFact.Percent = percentMultipliedByAmountConsumed
 		nutritionFacts.NutritionFact = &nutritionFact
 		fmt.Printf("%s", nutritionFact.Vitamin)
 
 		nutritionFactsList = append(nutritionFactsList, &nutritionFacts)
 	}
+	return nutritionFactsList, nil
+}
+
+func GetNutritionInfoByInventoryId(inventoryId int) ([]*model.NutritionFacts, error) {
+	fmt.Printf("the invetoryID is: %d", inventoryId)
+
+	nutritionInfoQuery := fmt.Sprintf(`select i.Name, v.VitaminType, iv.PercentDailyValue
+	from VitaminDB..InventoryVitamin iv
+	join VitaminDB..Vitamin v 
+	on v.VitaminID = iv.VitaminID
+	join VitaminDB..Inventory i
+	on i.InventoryID = iv.InventoryID
+	where i.InventoryID = %d`, inventoryId)
+
+	context, cancel := context.WithTimeout(context.Background(), time.Millisecond * 8000)
+	defer cancel()
+
+	nutritionInfoResults, err := datamanager.DbConn.QueryContext(context, nutritionInfoQuery)
+
+	if (err != nil) {
+		return nil, err
+	}
+
+	defer nutritionInfoResults.Close()
+
+	
+	nutritionFactsList := make([]*model.NutritionFacts, 0)
+	for nutritionInfoResults.Next() {
+		var nutritionFacts model.NutritionFacts
+		var nutritionFact model.NutritionFact
+		nutritionInfoResults.Scan(&nutritionFacts.InventoryName, &nutritionFact.Vitamin, &nutritionFact.Percent)
+		nutritionFacts.NutritionFact = &nutritionFact
+
+		nutritionFactsList = append(nutritionFactsList, &nutritionFacts)
+	
+		fmt.Printf("%s", nutritionFacts)
+	}
+	
 	return nutritionFactsList, nil
 }
 

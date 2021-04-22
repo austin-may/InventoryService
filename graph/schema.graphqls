@@ -68,7 +68,8 @@ type NutritionFact {
 
 type Query {
   inventory: [Inventory!]!,
-  vitaminNutritionFacts(inventoryConsumed: [InventoryConsumed!]) : [NutritionFacts]!
+  vitaminNutritionFacts(inventoryConsumed: [InventoryConsumed!]) : [NutritionFacts]!,
+  nutritionFactsByInventoryId(inventoryId: Int!): [NutritionFacts]
 }
 
 type Mutation {
