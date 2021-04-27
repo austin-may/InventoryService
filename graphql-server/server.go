@@ -4,7 +4,7 @@ import (
 	"log"
 	"my-go-apps/InventoryService/graph"
 	"my-go-apps/InventoryService/graph/generated"
-	"my-go-apps/VitaminApp/cors"
+	"my-go-apps/InventoryService/cors"
 	"net/http"
 	"os"
 
